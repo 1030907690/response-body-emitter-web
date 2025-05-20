@@ -31,10 +31,21 @@ const  receiveMessage = () =>{
       tip.value = "处理完成，关闭连接"
       eventSource.close()
     });
+    
+    eventSource.addEventListener('end', (event) => {
+      console.log("服务器主动关闭连接");
+      eventSource.close(); // 主动关闭连接
+    });
+
 
     //接收失败
     eventSource.onerror = (error) => {
-        console.error('SSE error:', error);
+        console.error('SSE error:',eventSource.readyState, error);
+        if (eventSource.readyState === EventSource.CLOSED) { 
+          console.log("正常关闭"); // 应在此过滤已关闭状态
+        } else {
+          console.error("真实错误:");
+        }
         // 如果不close，会自动重连
         eventSource.close()
     };
