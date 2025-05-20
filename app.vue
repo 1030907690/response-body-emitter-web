@@ -26,11 +26,7 @@ const  receiveMessage = () =>{
       text.value =  text.value + event.data;
     };
 
-    eventSource.addEventListener('complete', (e) => {
-      console.log("处理完成")
-      tip.value = "处理完成，关闭连接"
-      eventSource.close()
-    });
+    
     
     eventSource.addEventListener('end', (event) => {
       console.log("服务器主动关闭连接");
