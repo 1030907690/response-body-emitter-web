@@ -47,11 +47,37 @@ const  receiveMessage = () =>{
     };
 
     
-} 
+}
+
+
+const fetchStream = async () => {
+    const response = await fetch('http://127.0.0.1:8080/api/index/responseBodyEmitter'); // 替换为你的接口路径
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+
+    // 持续读取数据流
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+            console.log('Stream completed');
+            break;
+        }
+        const textChunk = decoder.decode(value, { stream: true });
+        console.log('Received chunk:', textChunk);
+        text.value += textChunk
+        // 更新页面内容（例如拼接日志）
+        // const logArea = document.getElementById('log-container');
+        // logArea.textContent += textChunk;
+    }
+}
+
 onMounted(()=>{
 
   console.log("onMounted")
-  receiveMessage()
+  // SseEmitter 的方式
+  // receiveMessage()
+  // 返回ResponseBodyEmitter 
+  fetchStream()
   // $fetch("http://127.0.0.1:8080/api/index/chat",{method:'post',body:{
   //   query:"你是"
   // }}).then(res=>{
